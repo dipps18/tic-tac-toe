@@ -108,12 +108,10 @@ while Game.gameover == false && Game.count != 9
   loop do
     puts "Player #{turn}>> Please enter the position where you would like your marker"
     position = gets.chomp
-    p position 
     next unless Game.maps.include?(position.to_i)
 
     turn == 1 ? update_player(player1, position, turn) : update_player(player2, position, turn)
     Game.count = Game.count + 1
-    p Game.count
     Game.gameover = true if Game.count == 9
     break
   end
