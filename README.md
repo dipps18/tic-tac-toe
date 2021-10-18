@@ -10,4 +10,4 @@ Classic Tic Tac Toe console game created using ruby
 
 4. When all 9 squares are full, the game is over. If no player has 3 marks in a row, the game ends in a tie. 
 
-Play it on repl.it: https://replit.com/@DipankarPurecha
+Play it on repl.it: https://replit.com/@DipankarPurecha/tic-tac-toe?v=1
