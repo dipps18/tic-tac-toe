@@ -77,7 +77,6 @@ class Game
     puts "Player #{turn} won the game!" if check_winner(player) == true
   end
 end
-
 # class for player
 class Player
 
@@ -103,4 +102,4 @@ class Player
 end
 
 game = Game.new
-game.play_game()
+game.play_game
