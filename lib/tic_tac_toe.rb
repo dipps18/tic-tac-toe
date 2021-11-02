@@ -8,7 +8,6 @@ class Game
     @maps = maps
     @gameover = false
     @count = 0
-    print_screen
   end
 
   def play_game()
@@ -17,7 +16,7 @@ class Game
     puts 'Player 1 >>'
     player1.set_character
     puts 'Player 2 >>'
-    player2.set_character(player1.player)
+    player2.set_character(player1.player_marker)
     print_screen
     game_loop(player1, player2)
     puts 'Draw' if @count == 9
@@ -63,7 +62,7 @@ class Game
   end
 
   def update_player_position(player, position)
-    @maps[position.to_i] = player.player
+    @maps[position.to_i] = player.player_marker
     player.position.push(position.to_i)
   end
 
@@ -80,21 +79,21 @@ end
 # class for player
 class Player
 
-  attr_accessor :player, :position
+  attr_accessor :player_marker, :position
 
   def initialize
     @position = []
-    @player = ''
+    @player_marker = ''
   end
 
   def set_character(taken_character = nil)
       loop do
         puts taken_character.nil? ? "Input any character you like\n" : "Input any character you like except #{taken_character}\n"
-        @player = gets.chomp[0]
-        break unless @player == taken_character || @player.match?(/\s/)
+        @player_marker = gets.chomp[0]
+        break unless @player_marker == taken_character || @player_marker.match?(/\s/)
       end
   end
 end
 
-game = Game.new
-game.play_game
+# game = Game.new
+#game.play_game
