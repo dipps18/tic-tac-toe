@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+WINNING_POSITIONS = [[0, 4, 8], [0, 1, 2], [0, 3, 6], [2, 4, 6], [2, 5, 8], [6, 7, 8], [1, 4, 7], [3, 4, 5]]
 
 require 'pry'
 class Game
@@ -6,7 +7,6 @@ class Game
   def initialize(maps = [0, 1, 2, 3, 4, 5, 6, 7, 8])
     @maps = maps
     @gameover = false
-    @winning_positions = [[0, 4, 8], [0, 1, 2], [0, 3, 6], [2, 4, 6], [2, 5, 8], [6, 7, 8], [1, 4, 7], [3, 4, 5]]
     @count = 0
     print_screen
   end
@@ -25,13 +25,13 @@ class Game
 
   def game_loop(player1, player2)
     while @gameover == false && @count != 9
-      turn = @count.even? ? 1 : 2
+      player_id = @count.even? ? 1 : 2
       loop do
-        puts "Player #{turn}>> Please enter the position where you would like your marker"
+        puts "Player #{player_id}>> Please enter the position where you would like your marker"
         position = gets.chomp
         next unless @maps.include?(position.to_i)
 
-        turn == 1 ? update_player(player1, position, turn) : update_player(player2, position, turn)
+        player_id == 1 ? update_player(player1, position, player_id) : update_player(player2, position, player_id)
         @count += 1
         @gameover = true if @count == 9
         break
@@ -52,10 +52,14 @@ class Game
     puts "       |       |           \n\n"
   end
 
-  def update_player(player, position, turn)
+  def update_player(player, position, player_id)
     update_player_position(player, position)
     print_screen
-    puts "Player #{turn} won the game!" if game_over?(player) == true
+    display_winner(player_id) if game_over?(player) == true
+  end
+
+  def display_winner(player_id)
+    puts "Player #{player_id} won the game!"
   end
 
   def update_player_position(player, position)
@@ -64,15 +68,15 @@ class Game
   end
 
   def game_over?(player)
-    @winning_positions.each do |element|
+    WINNING_POSITIONS.each do |element|
       next unless (element.sort & player.position).length == 3
-        return @gameover = true
-      end
+
+      return @gameover = true
     end
+    return false
   end
-
-
 end
+
 # class for player
 class Player
 
@@ -84,16 +88,11 @@ class Player
   end
 
   def set_character(taken_character = nil)
-    if taken_character.nil?
-      puts "Input any character you like\n"
-      @player = gets.chomp[0]
-    else
       loop do
-        puts "Input any character you like except #{taken_character}\n"
+        puts taken_character.nil? ? "Input any character you like\n" : "Input any character you like except #{taken_character}\n"
         @player = gets.chomp[0]
-        break unless @player == taken_character
+        break unless @player == taken_character || @player.match?(/\s/)
       end
-    end
   end
 end
 
