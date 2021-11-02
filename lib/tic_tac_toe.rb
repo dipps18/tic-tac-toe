@@ -40,7 +40,8 @@ class Game
   end
 
   def print_screen
-    puts "\n       |       |\n"
+    puts "\n"
+    puts "       |       |\n"
     puts "   #{@maps[0]}   |   #{@maps[1]}   |   #{@maps[2]}"
     puts "_______|_______|_______\n"
     puts "       |       |\n"
@@ -51,9 +52,10 @@ class Game
     puts "       |       |           \n\n"
   end
 
-  def end_game(player)
-    @gameover = true
-    player.player_won = true
+  def update_player(player, position, turn)
+    update_player_position(player, position)
+    print_screen
+    puts "Player #{turn} won the game!" if game_over?(player) == true
   end
 
   def update_player_position(player, position)
@@ -61,26 +63,20 @@ class Game
     player.position.push(position.to_i)
   end
 
-  def check_winner(player)
+  def game_over?(player)
     @winning_positions.each do |element|
       next unless (element.sort & player.position).length == 3
-        end_game(player)
-        @gameover = true
-        return true
+        return @gameover = true
       end
     end
   end
 
-  def update_player(player, position, turn)
-    update_player_position(player, position)
-    print_screen
-    puts "Player #{turn} won the game!" if check_winner(player) == true
-  end
+
 end
 # class for player
 class Player
 
-  attr_accessor :player, :position, :player_won
+  attr_accessor :player, :position
 
   def initialize
     @position = []
