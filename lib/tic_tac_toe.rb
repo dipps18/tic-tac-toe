@@ -1,13 +1,14 @@
 # frozen_string_literal: true
+
 WINNING_POSITIONS = [[0, 4, 8], [0, 1, 2], [0, 3, 6], [2, 4, 6], [2, 5, 8], [6, 7, 8], [1, 4, 7], [3, 4, 5]]
 
-require 'pry'
 class Game
-  attr_accessor :maps, :gameover,:count
-  def initialize(maps = [0, 1, 2, 3, 4, 5, 6, 7, 8])
+  attr_accessor :maps, :gameover, :count, :player_won, :draw
+  def initialize(gameover = false, count = 0, maps = [0, 1, 2, 3, 4, 5, 6, 7, 8], player_won = false)
     @maps = maps
-    @gameover = false
-    @count = 0
+    @gameover = gameover
+    @count = count
+    @player_won = player_won
   end
 
   def play_game()
@@ -19,22 +20,19 @@ class Game
     player2.set_character(player1.player_marker)
     print_screen
     game_loop(player1, player2)
-    puts 'Draw' if @count == 9
+    puts 'Draw' unless @player_won
   end
 
   def game_loop(player1, player2)
-    while @gameover == false && @count != 9
+    loop do
       player_id = @count.even? ? 1 : 2
-      loop do
-        puts "Player #{player_id}>> Please enter the position where you would like your marker"
-        position = gets.chomp
-        next unless @maps.include?(position.to_i)
+      puts "Player #{player_id}>> Please enter the position where you would like your marker"
+      position = gets.chomp
+      next unless @maps.include?(position.to_i) && position.match?(/\S/)
 
-        player_id == 1 ? update_player(player1, position, player_id) : update_player(player2, position, player_id)
-        @count += 1
-        @gameover = true if @count == 9
-        break
-      end
+      player_id == 1 ? update_player(player1, position, player_id) : update_player(player2, position, player_id)
+      @count += 1
+      break if @gameover == true
     end
   end
 
@@ -58,6 +56,7 @@ class Game
   end
 
   def display_winner(player_id)
+    @player_won = true
     puts "Player #{player_id} won the game!"
   end
 
@@ -69,16 +68,14 @@ class Game
   def game_over?(player)
     WINNING_POSITIONS.each do |element|
       next unless (element.sort & player.position).length == 3
-
       return @gameover = true
     end
-    return false
+    return @count == 9
   end
 end
 
 # class for player
 class Player
-
   attr_accessor :player_marker, :position
 
   def initialize
@@ -87,13 +84,13 @@ class Player
   end
 
   def set_character(taken_character = nil)
-      loop do
-        puts taken_character.nil? ? "Input any character you like\n" : "Input any character you like except #{taken_character}\n"
-        @player_marker = gets.chomp[0]
-        break unless @player_marker == taken_character || @player_marker.match?(/\s/)
-      end
+    loop do
+      puts taken_character.nil? ? "Input any character you like\n" : "Input any character you like except #{taken_character}\n"
+      @player_marker = gets.chomp[0]
+      break unless @player_marker == taken_character || @player_marker == nil || @player_marker.match?(/\s/)
+    end
   end
 end
 
-# game = Game.new
+#game = Game.new
 #game.play_game
